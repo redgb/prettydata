@@ -3,61 +3,61 @@
 <head>
     <title>pretty data</title>
 </head>
-<body onload="myFunction()">
-    <h1>data</h1>
-    <p id="filecontents"></p>
 
-    <input type="file" id="myFile" multiple size="50" onchange="myFunction()">
+<body>
+    <h1>data</h1>
+
+    <p id = "name"></p>
+    <p id = "size"></p>
+    <p id= "filecontents"></p>
+
+    <div>
+        <table id = "table">
+        </table>
+    </div>
+
+    <button onclick = "splitData()">"button"</button>
 
     <script>
-        function myFunction(){
-            var x = document.getElementById("myFile");
-            var txt = "";
-            if ('files' in x) {
-                if (x.files.length == 0) {
-                    txt = "Select one or more files.";
-                } else {
-                    for (var i = 0; i < x.files.length; i++) {
-                        txt += "<br><strong>" + (i+1) + ". file</strong><br>";
-                        var file = x.files[i];
-                        window.file = file
+    var finaltable = ""
 
+    function splitData() {
+        var data = "Row ID,Order Priority,Discount,Unit Price";
+        var table = data.split(",");
+        displayNewRow(table, 1);
+        var data = "Rffffffow ID,Order Priffddfdfority,Disssddscount,Unsddsit Price";
+        var table = data.split(",");
+        displayNewRow(table, 2)
+    }
 
-                        const reader = new FileReader();
+    function displayNewRow(data, rownumber) {
+        //data is the actual array that holds the data.
+        //rownumber is the number of the row in the table that is to be made.
+        var appendsfirst = "The first thing to append to the row.";
+        var appendslast = "The last thing to append to the row.";
 
-                        // This fires after the blob has been read/loaded.
-                        reader.addEventListener('loadend', (e) => {
-
-                          window.e = e;
-                          window.reader= reader;
-                          //const text = e.srcElement.result;
-                          //console.log(text);
-                        });
-
-                        // Start reading the blob as text.
-                        reader.readAsText(file);
-
-
-                        if ('name' in file) {
-                            txt += "name: " + file.name + "<br>";
-                        }
-                        if ('size' in file) {
-                            txt += "size: " + file.size + " bytes <br>";
-                        }
-                        txt += "contents" + e.target.result;
-                    }
-                }
-            }
-            else {
-                if (x.value == "") {
-                    txt += "Select one or more files.";
-                } else {
-                    txt += "The files property is not supported by your browser!";
-                    txt  += "<br>The path of the selected file: " + x.value; // If the browser does not support the files property, it will return the path of the selected file instead.
-                }
-            }
-            document.getElementById("filecontents").innerHTML = txt;
+        if (rownumber == 1) {
+            appendsfirst = "<thead><tr>";
+            appendslast = "</tr></thead><tbody>";
         }
+        else if (rownumber == data.length) {
+            appendsfirst = "<tr>";
+           appendslast = "</tr>";
+        }
+        else {
+            appendsfirst = "<tr>";
+            appendslast = "</tr></tbody>";
+        }
+
+        finaltable += appendsfirst;
+        var i;
+        for (i = 0; i < data.length; i++) {
+            finaltable += "<th>" + data[i] + "</th>";
+        }
+        finaltable += appendslast;
+
+        document.getElementById("table").innerHTML = finaltable;
+    }
     </script>
 </body>
 </html>
