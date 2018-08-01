@@ -2,62 +2,75 @@
 <html>
 <head>
     <title>pretty data</title>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.10/lodash.min.js"></script>
 </head>
 
 <body>
-    <h1>data</h1>
+<p id = "textstore" style="display:none"></p>
 
-    <p id = "name"></p>
-    <p id = "size"></p>
-    <p id= "filecontents"></p>
+<h1>pretty data</h1>
+<input type="file" onchange="readFile(event)">
+<br>
+<br>
+<div>
+    <table id = "table">
+    </table>
+</div>
 
-    <div>
-        <table id = "table">
-        </table>
-    </div>
+<script>
+var finaltable = ""
 
-    <button onclick = "splitData()">"button"</button>
+function readFile(event) {
+    var fileList = event.target.files;
 
-    <script>
-    var finaltable = ""
+    var reader = new FileReader();
 
-    function splitData() {
-        var data = "Row ID,Order Priority,Discount,Unit Price";
-        var table = data.split(",");
-        displayNewRow(table, 1);
-        var data = "Rffffffow ID,Order Priffddfdfority,Disssddscount,Unsddsit Price";
-        var table = data.split(",");
-        displayNewRow(table, 2)
+    reader.onload = function(loadedEvent) {
+        filetext = loadedEvent.target.result;
+        document.getElementById("textstore").innerHTML = filetext;
+        splitText();
+    }
+    reader.readAsText(fileList[0]);
+}
+
+function splitText() {
+    filetext = document.getElementById("textstore").innerHTML;
+    var columns = filetext.split("\n");
+    var i;
+    for (i = 0; i < columns.length; i++) {
+        var row = columns[i].split(",");
+        displayNewRow(row, i)
+    }
+}
+
+function displayNewRow(data, rownumber) {
+    var appendsfirst = "";
+    var appendslast = "";
+
+    if (rownumber == 0) {
+        appendsfirst = "<thead><tr>";
+        appendslast = "</tr></thead><tbody>";
+    }
+    else if (rownumber == data.length+1) {
+        appendsfirst = "<tr>";
+        appendslast = "</tr></tbody>";
+    }
+    else {
+        appendsfirst = "<tr>";
+        appendslast = "</tr>";
     }
 
-    function displayNewRow(data, rownumber) {
-        //data is the actual array that holds the data.
-        //rownumber is the number of the row in the table that is to be made.
-        var appendsfirst = "The first thing to append to the row.";
-        var appendslast = "The last thing to append to the row.";
-
-        if (rownumber == 1) {
-            appendsfirst = "<thead><tr>";
-            appendslast = "</tr></thead><tbody>";
-        }
-        else if (rownumber == data.length) {
-            appendsfirst = "<tr>";
-           appendslast = "</tr>";
-        }
-        else {
-            appendsfirst = "<tr>";
-            appendslast = "</tr></tbody>";
-        }
-
-        finaltable += appendsfirst;
-        var i;
-        for (i = 0; i < data.length; i++) {
-            finaltable += "<th>" + data[i] + "</th>";
-        }
-        finaltable += appendslast;
-
-        document.getElementById("table").innerHTML = finaltable;
+    finaltable += appendsfirst;
+    var i;
+    for (i = 0; i < data.length; i++) {
+        finaltable += "<td>" + data[i] + "</td>";
     }
-    </script>
+    finaltable += appendslast;
+
+    document.getElementById("table").innerHTML = finaltable;
+}
+</script>
+
 </body>
 </html>
+
