@@ -79,7 +79,7 @@ var gridOptions = {
     rowSelection: 'multiple',                   //the user can select multiple rows
     pagination: true,                           //the user can use pages in the table
     paginationPageSize: 250,                    //the amount of rows on one page is 250
-    enableColResize: true                      //allow for the columns to be resized
+    enableColResize: true                       //allow for the columns to be resized
 };
 
 //FUNCTIONS
