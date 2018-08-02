@@ -5,14 +5,18 @@
 //
 
 //VARIABLES
-var hasStorage; //remembers if the user can store their recent files
+var hasStorage = true; //remembers if the user can store their recent files
 
+//FUNCTIONS
+
+//checks for the web storage support and disables recent file sharing if not supported
 function start() {
     if (typeof(Storage) !== "undefined") {
-
+        hasStorage = true;
     } else {
         hideElement("recentfiles");
         alert("this browser doesn't support html5 web storage, so some features have been disabled");
+        hasStorage = false;
     }
 }
 
@@ -22,8 +26,6 @@ function readData(event) {
     var reader = new FileReader(); //object to read contents of a file
 
     reader.onload = function(loadedEvent) { //runs when the file is read
-        var filetext = loadedEvent.target.result; //set variable filetext to the contents of the file
-
         //update the visible indications of the currently opened file
         document.getElementById("currentfile").innerHTML = fileList[0].name;
         document.getElementById("currentfilename").innerHTML = fileList[0].name + " opened";
@@ -35,10 +37,21 @@ function readData(event) {
         hideElement("loadtextpanel");
         hideElement("loadtextheat");
 
+        //save the file name and data to the recent file history
+        if (hasStorage === true) {
+            saveFileToHistory(fileList[0].name, loadedEvent.target.result);
+        }
+
         //create a table with the data inside it
-        createTable(filetext);
+        createTable(loadedEvent.target.result);
     };
     reader.readAsText(fileList[0]); //read the file
+}
+
+function saveFileToHistory(name, content) {
+    var tobestoredarray = [name, content, ]
+    var storefiles = [];
+    localStorage.lastusedfile =
 }
 
 //hides a given element on the page using its id
