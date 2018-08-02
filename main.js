@@ -49,9 +49,7 @@ function readData(event) {
 }
 
 function saveFileToHistory(name, content) {
-    var tobestoredarray = [name, content, ]
-    var storefiles = [];
-    localStorage.lastusedfile =
+    localStorage.lastusedfile = [name, content];
 }
 
 //hides a given element on the page using its id
