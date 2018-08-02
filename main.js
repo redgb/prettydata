@@ -4,6 +4,18 @@
 //
 //
 
+//VARIABLES
+var hasStorage; //remembers if the user can store their recent files
+
+function start() {
+    if (typeof(Storage) !== "undefined") {
+
+    } else {
+        hideElement("recentfiles");
+        alert("this browser doesn't support html5 web storage, so some features have been disabled");
+    }
+}
+
 //reads the data from the csv file, hides the necessary elements and starts table generation
 function readData(event) {
     var fileList = event.target.files; //creates a list with all the loaded files - in this case there is only one file
@@ -56,7 +68,7 @@ var gridOptions = {
     rowSelection: 'multiple',                   //the user can select multiple rows
     pagination: true,                           //the user can use pages in the table
     paginationPageSize: 250,                    //the amount of rows on one page is 250
-    enableColResize: true,                      //allow for the columns to be resized
+    enableColResize: true                      //allow for the columns to be resized
 };
 
 //FUNCTIONS
