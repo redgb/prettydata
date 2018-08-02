@@ -10,6 +10,9 @@
 <p id = "textstore" style="display:none"></p>
 
 <h1>pretty data</h1>
+<div id="progress">
+  <div id="bar"></div>
+</div>
 <input type="file" onchange="readFile(event)">
 <br>
 <br>
@@ -71,8 +74,20 @@ function displayNewRow(data, rownumber) {
         finaltable += "<" + appendstype + ">" + data[i] + "</" + appendstype + ">";
     }
     finaltable += appendslast;
+    move(data.length);
+    if (rownumber % 10 == 0 || rownumber <= 10) {
+        document.getElementById("table").innerHTML = finaltable;
+    }
 
-    document.getElementById("table").innerHTML = finaltable;
+}
+
+function move(sections) {
+    var elem = document.getElementById("bar");
+    var width = 0;
+    var individualsection = 300/(sections-1);
+    console.log(individualsection);
+    width = width + individualsection;
+    elem.style.width = width + "%";
 }
 </script>
 
