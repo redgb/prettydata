@@ -1,87 +1,97 @@
-var columnDefs = [
-    {
-        headerName: 'Athlete',
-        field: 'athlete',
-        width: 150,
-        filterParams: {newRowsAction: 'keep'},
-        checkboxSelection: function(params) {
-            // we put checkbox on the name if we are not doing grouping
-            return params.columnApi.getRowGroupColumns().length === 0;
-        },
-        headerCheckboxSelection: function(params) {
-            // we put checkbox on the name if we are not doing grouping
-            return params.columnApi.getRowGroupColumns().length === 0;
-        }
-    },
-    {headerName: 'Age', field: 'age', width: 90, filterParams: {newRowsAction: 'keep'}},
-    {headerName: 'Country', field: 'country', width: 120, filterParams: {newRowsAction: 'keep'}},
-    {headerName: 'Year', field: 'year', width: 90, filterParams: {newRowsAction: 'keep'}},
-    {headerName: 'Date', field: 'date', width: 110, filterParams: {newRowsAction: 'keep'}},
-    {headerName: 'Sport', field: 'sport', width: 110, filterParams: {newRowsAction: 'keep'}},
-    {headerName: 'Gold', field: 'gold', width: 100, filterParams: {newRowsAction: 'keep'}},
-    {headerName: 'Silver', field: 'silver', width: 100, filterParams: {newRowsAction: 'keep'}},
-    {headerName: 'Bronze', field: 'bronze', width: 100, filterParams: {newRowsAction: 'keep'}},
-    {headerName: 'Total', field: 'total', width: 100, filterParams: {newRowsAction: 'keep'}}
-];
+//
+//
+//  GENERAL FUNCTIONS
+//
+//
 
-var autoGroupColumnDef = {
-    headerName: 'Group',
-    width: 200,
-    field: 'athlete',
-    valueGetter: function(params) {
-        if (params.node.group) {
-            return params.node.key;
-        } else {
-            return params.data[params.colDef.field];
-        }
-    },
-    headerCheckboxSelection: true,
-    // headerCheckboxSelectionFilteredOnly: true,
-    cellRenderer:'agGroupCellRenderer',
-    cellRendererParams: {
-        checkbox: true
-    }
-};
+//reads the data from the csv file, hides the necessary elements and starts table generation
+function readData(event) {
+    var fileList = event.target.files; //creates a list with all the loaded files - in this case there is only one file
+    var reader = new FileReader(); //object to read contents of a file
 
-var gridOptions = {
-    enableSorting: true,
-    enableFilter: true,
-    suppressRowClickSelection: true,
-    groupSelectsChildren: true,
-    debug: true,
-    rowSelection: 'multiple',
-    enableColResize: true,
-    rowGroupPanelShow: 'always',
-    pivotPanelShow: 'always',
-    enableRangeSelection: true,
-    columnDefs: columnDefs,
-    pagination: true,
-    paginationPageSize: 10,
-    autoGroupColumnDef: autoGroupColumnDef,
-    paginationNumberFormatter: function(params) {
-        return '[' + params.value.toLocaleString() + ']';
-    },
-    defaultColDef: {
-        editable: true,
-        enableRowGroup: true,
-        enablePivot: true,
-        enableValue: true
-    }
-};
+    reader.onload = function(loadedEvent) { //runs when the file is read
+        var filetext = loadedEvent.target.result; //set variable filetext to the contents of the file
 
-function onPageSizeChanged(newPageSize) {
-    var value = document.getElementById('page-size').value;
-    gridOptions.api.paginationSetPageSize(Number(value));
+        //update the visible indications of the currently opened file
+        document.getElementById("currentfile").innerHTML = fileList[0].name;
+        document.getElementById("currentfilename").innerHTML = fileList[0].name + " opened";
+
+        //remove the "load file" text from the webpage when a file is loaded
+        hideElement("loadtexttable");
+        hideElement("loadtextbar");
+        hideElement("loadtextline");
+        hideElement("loadtextpanel");
+        hideElement("loadtextheat");
+
+        //create a table with the data inside it
+        createTable(filetext);
+    };
+    reader.readAsText(fileList[0]); //read the file
 }
 
+//hides a given element on the page using its id
+function hideElement(id) {
+    var elem = document.getElementById(id);
+    elem.style.display = "none";
+}
 
-// setup the grid after the page has finished loading
-document.addEventListener('DOMContentLoaded', function() {
-    var gridDiv = document.querySelector('#myGrid');
-    new agGrid.Grid(gridDiv, gridOptions);
+//
+//
+//  TABLE GENERATION FUNCTIONS
+//
+//
 
-    agGrid.simpleHttpRequest({url: 'https://raw.githubusercontent.com/ag-grid/ag-grid-docs/master/src/olympicWinners.json'}).then(function(data) {
-        gridOptions.api.setRowData(data);
-        gridOptions.api.paginationGoToPage(4);
-    });
-});
+
+//VARIABLES
+
+var columnDefs = [];                            //the headers for the table
+var rowData = [];                               //the rows for the table
+var usedcolumns = [];                           //used to track the headers for the table
+
+var gridOptions = {
+    columnDefs: columnDefs,                     //use the variable "columnsDefs" to create the columns
+    rowData: rowData,                           //use the variable "rowData" to create the rows
+    enableSorting: true,                        //allow the user to sort data
+    enableFilter: true,                         //allow the user to filter data
+    rowSelection: 'multiple',                   //the user can select multiple rows
+    pagination: true,                           //the user can use pages in the table
+    paginationPageSize: 250,                    //the amount of rows on one page is 250
+    enableColResize: true,                      //allow for the columns to be resized
+};
+
+//FUNCTIONS
+
+//creates the header of the table in the appropriate format and saves it to the columnDefs variable
+function createHeader(data) {
+    var rows = data.split("\n");
+    var cell;
+    var header = rows[0].split(",");
+    for (cell = 0; cell < header.length; cell++) {
+        var headerdict = {};
+        headerdict["headerName"] = header[cell];
+        headerdict["field"] = header[cell].toString().replace(/\s/g,'').toLocaleLowerCase();
+        usedcolumns.push(headerdict["field"]);
+        headerdict["checkboxSelection"] = cell === 0;
+        columnDefs.push(headerdict);
+    }
+}
+
+//creates every row in the table in the appropriate format and saves it to the rowData variable
+function createRows(data) {
+    var rows = data.split("\n");
+    var x;
+    for (x = 1; x < rows.length; x++) {
+        var currentrow = rows[x];
+        currentrow = currentrow.split(",");
+        var cell = _.zipObject(usedcolumns, currentrow); //https://lodash.com/docs/4.17.10#zipObject
+        rowData.push(cell);
+    }
+}
+
+//runs all table related functions and then creates the table on the page
+function createTable(data) {
+    createHeader(data);
+    createRows(data);
+    var eGridDiv = document.querySelector('#tablefinal'); //locates the tables container in the page
+    new agGrid.Grid(eGridDiv, gridOptions); //loads the table into #tablefinal
+}
