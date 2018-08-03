@@ -1,7 +1,6 @@
 #pretty data
 
 ##todo 
-- **allow only one table to be loaded**
 - **graphs**
 - store recent files
 - drag and drop uploading

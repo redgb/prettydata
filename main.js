@@ -18,6 +18,7 @@ function start() {
         alert("this browser doesn't support html5 web storage, so some features have been disabled");
         hasStorage = false;
     }
+    document.getElementById("fileclose").disabled = true;
 }
 
 //reads the data from the csv file, hides the necessary elements and starts table generation
@@ -27,8 +28,8 @@ function readData(event) {
 
     reader.onload = function(loadedEvent) { //runs when the file is read
         //update the visible indications of the currently opened file
-        document.getElementById("currentfile").innerHTML = fileList[0].name;
         document.getElementById("currentfilename").innerHTML = fileList[0].name + " opened";
+        document.getElementById("tabletab-tab").innerHTML = "table: <b>"  + fileList[0].name +"</b>";
 
         //remove the "load file" text from the webpage when a file is loaded
         hideElement("loadtexttable");
@@ -36,6 +37,10 @@ function readData(event) {
         hideElement("loadtextline");
         hideElement("loadtextpanel");
         hideElement("loadtextheat");
+        document.getElementById("inputGroupFile02").disabled = true;
+        document.getElementById("fileclose").disabled = false;
+        document.getElementById("fileopen").disabled = true;
+        console.log(fileList[0].type);
 
         //save the file name and data to the recent file history
         if (hasStorage === true) {
@@ -84,6 +89,17 @@ var gridOptions = {
 
 //FUNCTIONS
 
+function closeTable() {
+    gridOptions.api.destroy();
+    columnDefs = [];
+    rowData = [];
+    document.getElementById("inputGroupFile02").disabled = false;
+    document.getElementById("fileclose").disabled = true;
+    document.getElementById("fileopen").disabled = false;
+    document.getElementById("currentfilename").innerHTML = "open a .csv file";
+    document.getElementById("tabletab-tab").innerHTML = "table";
+}
+
 //creates the header of the table in the appropriate format and saves it to the columnDefs variable
 function createHeader(data) {
     var rows = data.split("\n");
@@ -103,7 +119,7 @@ function createHeader(data) {
 function createRows(data) {
     var rows = data.split("\n");
     var x;
-    for (x = 1; x < rows.length; x++) {
+    for (x = 1; x < rows.length-1; x++) {
         var currentrow = rows[x];
         currentrow = currentrow.split(",");
         var cell = _.zipObject(usedcolumns, currentrow); //https://lodash.com/docs/4.17.10#zipObject

@@ -29,11 +29,10 @@
             <!--dropdown menu button-->
             <li class="nav-item dropdown" id = "recentfiles">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Files
+                    files
                 </a>
                 <!--dropdown options-->
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="#" id = "currentfile">none currently opened</a>
                     <a class="dropdown-item" href="#">1</a>
                     <a class="dropdown-item" href="#">2</a>
                     <a class="dropdown-item" href="#">3</a>
@@ -43,15 +42,36 @@
         </ul>
         <div></div>
 
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" id = "fileopen">upload file</button>
+            <button type="button" class="btn btn-secondary" disabled id ="fileclose" onclick="closeTable()">close file</button>
+        </div>
+
         <!--file upload button-->
-        <div class="input-group-sm">
-            <div class="custom-file">
-                <input type="file" class="custom-file-input" id="inputGroupFile02" onchange="readData(event)">
-                <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02" id = "currentfilename">pick a .CSV file</label>
+    </div>
+</nav>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">upload a file</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group-sm">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="inputGroupFile02" onchange="readData(event)" accept = ".csv">
+                        <label class="custom-file-label" for="inputGroupFile02" aria-describedby="inputGroupFileAddon02" id = "currentfilename">pick a .csv file</label>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</nav>
+</div>
 
 <!--tab navigation-->
 <ul class="nav nav-tabs nav-fill nav-pills" id="myTab" role="tablist">
