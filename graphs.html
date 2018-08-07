@@ -1,40 +1,103 @@
-<html>
-<head>
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<html><head><script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/series-label.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script></head>
 
-</head>
+
+
 <body>
-    <div id="container" style="width:100%; height:400px;"></div>
-    <script>
-        $(function () {
-            var myChart = Highcharts.chart('container', {
-                chart: {
-                    type: 'bar'
+
+<div id="container"></div>
+
+<script>
+
+    Highcharts.chart('container', {
+
+        title: {
+            text: 'Solar Employment Growth by Sector, 2010-2016'
+        },
+
+        subtitle: {
+            text: 'Source: thesolarfoundation.com'
+        },
+
+        yAxis: {
+            title: {
+                text: 'Number of Employees'
+            }
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'right',
+            verticalAlign: 'middle'
+        },
+
+        plotOptions: {
+            series: {
+                label: {
+                    connectorAllowed: false
                 },
-                title: {
-                    text: 'product'
+                pointStart: 2010
+            }
+        },
+
+        series: [{
+            name: 'Installation',
+            data: [43934, 52503, 57177, 69658, 97031, 119931, 137133, 154175]
+        }],
+
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 500
                 },
-                xAxis: {
-                    categories: ['paper', 'tree', 'wood', 'pens']
-                },
-                yAxis: {
-                    title: {
-                        text: 'products bought'
+                chartOptions: {
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'center',
+                        verticalAlign: 'bottom'
                     }
-                },
-                series: [{
-                    name: 'Jane',
-                    data: [1, 0, 4]
+                }
+            }]
+        }
 
-                }, {
-                    name: 'John',
-                    data: [5, 7, 3]
-                }]
-            });
-        });</script>
+    });
+</script>
+
+
+<script>
+    function createBarChart(data, name) {
+        $('#bargraph').highcharts({
+            chart: {
+                type: "line"
+            },
+            title: {
+                text: name
+            },
+            xAxis: {
+                categories: []
+            },
+            yAxis: {
+                title: {
+                    text: "number"
+                }
+            },
+            data: {
+                csv: data
+            },
+            plotOptions: {
+                series: {
+                    marker: {
+                        enabled: false
+                    }
+                }
+            }
+        });
+    }
+</script>
+
 </body>
+
+
+
 </html>
-
-
-
